@@ -15,6 +15,10 @@
 * Populate the DB with this seed data.
 * Use some ArticeRecord methods in the Rails console to find movies.
 
+**Note: The implementation of this lesson is in**
+[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
+
+
 ### Model, View, Controller (MVC)
 
 Rails is based on the MVC Architecture.
@@ -659,11 +663,16 @@ end
 
 > See how this annotate command will generate comments that show the current state of your Model's attributes.
 
-#### This final app, `movie_crud_app`, is kept []()
+**Note: The implementation of this lesson is in**
+[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 
+## Resources
 
-
+* [Rails Guide - Getting Started](http://guides.rubyonrails.org/getting_started.html)
+* [Rails Guide - Active Record Migrations](http://guides.rubyonrails.org/active_record_migrations.html)
+* [Rails Guide - Active Record Basics](http://guides.rubyonrails.org/active_record_basics.html)
+* [PragStudio - RubyOnRails Level 1](https://pragmaticstudio.com/rails). This is a **very** good resource for learning Rails. They have been teaching Rails since the beginning and their teaching and presentation skill are **excellent**.
 
 
 
