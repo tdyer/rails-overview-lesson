@@ -158,7 +158,7 @@ We should see a list of movie names that we have stored/persisted in the DB.
 
 The Rails convention is that we name a view after the controller action that recieves the HTTP Request. After the code has run in the controller action Rails will:
 
-1. Locate the view in the `app/views/<resource-name>` directory. This view file will be named after the action `<action-name>.html.erb`. Ex: `app/views/models/index.html.erb`
+1. Locate the view in the `app/views/<resource-name>` directory. This view file will be named after the action `<action-name>.html.erb`. Ex: `app/views/movies/index.html.erb`
 2. Process the contents of this file with ERB. 
 3. Add the contents created in step 2 into the body of the HTTP Response.
 
@@ -180,7 +180,7 @@ Other popular templating langauges for Rails are:
 * [Slim](http://slim-lang.com/)
 
 
-[ERB] is the default templating language used with Rails. But, it's no big deal, at all, to use HAML, Slim or some other templating language.
+ERB is the default templating language used with Rails. But, it's no big deal at all to use HAML, Slim or some other templating language.
 
 ## HTTP Request Processing.
 
