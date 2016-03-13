@@ -12,8 +12,7 @@
 * Maintain a cheatsheet for all the Rails and Rack commands. 
 * Add attributes to a Model.
 
-**Note: The implementation of this lesson is in**
-[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
+
 
 
 ### Model, View, Controller (MVC)
@@ -25,6 +24,14 @@ Rails is based on the MVC Architecture.
 We will be only looking at the **Model** and **DB** in this lesson. 
 
 We will come back to these two topics later, we will create the mimimal set of files needed at this time.
+
+## Previous Lesson
+[Initialize Rails Application](InitRails.md)
+
+## Source Code/Implementation
+
+**Note: The implementation of this lesson is in**
+[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 ## Setup 
 

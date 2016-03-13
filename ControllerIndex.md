@@ -5,19 +5,24 @@
 * Create a route to view all movies.
 * Create a ActionController for the movie resource.
 * Create a ActionController index action/method.
-* View the JSON Representation on all movies.
 * View the HTML Representation using a View. 
 * Construct a View for the HTML Represenation of all the movies.
+* Update the Rails Layout.
 
-**Note: The implementation of this lesson is in the `movies_index` branch of this repository**
-[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
-
-
-### Model, View, Controller (MVC)
+## Model, View, Controller (MVC)
 
 Rails is based on the MVC Architecture.
 
 ![MVC](mvc_archi1.png)
+
+
+## Previous Lesson
+[Create Migration and Model](CreateMigrationModel.md)
+
+## Source Code/Implementation
+
+**Note: The implementation of this lesson is in the `movies_index` branch of this repository**
+[`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 ## View all the Movies.
 
@@ -267,6 +272,7 @@ That wouldn't be very [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yoursel
 Create a reasonable footer for our site. Probably would have our email address, mailing address, etc.
 
 We **DO NOT** want to have to repeat this footer in every single view. _Yep, it should be in the layout.__
+
 ## Next Lesson
 [Viewing One Movie](ControllerShow.md)
 
