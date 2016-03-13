@@ -1,19 +1,16 @@
 ![General Assembly Logo](http://i.imgur.com/ke8USTq.png)
 
 ## Objectives
-* Draw Diagrams that show the flow of a HTTP Requests and Responses and the how the Model, View and Controller interact.
-* Start to create a cheatsheet for all the Rails and Rack commands. 
-* Create a Rails backend app.
-* Review the file/directory structure for Rails.
-* Initialize the DB for this Rails application.
-* Start the Rails app and access it.
+
+* Create a ActiveRecord Migration.
 * Create an ActiveRecord Model.
-* Create a DB Migration.
 * Migrate the Rails DB.
 * Check the DB for the Table associated with the Model.
 * Create a Seed file that will populate the DB.
 * Populate the DB with this seed data.
 * Use some ArticeRecord methods in the Rails console to find movies.
+* Maintain a cheatsheet for all the Rails and Rack commands. 
+* Add attributes to a Model.
 
 **Note: The implementation of this lesson is in**
 [`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
@@ -25,196 +22,34 @@ Rails is based on the MVC Architecture.
 
 ![MVC](mvc_archi1.png)
 
-* A **HTTP Request** is sent from the **Client**, (browser/curl).
-* The **URL Path** will determine what **Controller** will be executed.
-* The **URL Path** will uniquely indentify a **Resource**, (Song, Movie, Person, ...), this is implemented as **Model**.
-* This **Resource** and it's current state is persisted/stored in a **DB** table.
-* The **Representation** of this **Resource** is built by the **View**. The **Representation** could be in HTML, JSON, XML, PDF and Image, etc.
+We will be only looking at the **Model** and **DB** in this lesson. 
 
-We'll talk more about this architecture as we progress. And we'll see how an HTTP Request/Response flows thru and app.
+We will come back to these two topics later, we will create the mimimal set of files needed at this time.
 
+## Setup 
 
-## Create a new Rails application.
+This will build on the application created in the [Previous Lesson](InitRails.md).
 
+Create a file .sqliterc in your home directory and add the below configuration. _This will configure the [sqlite3](http://zetcode.com/db/sqlite/tool/) command to produce friendlier output._
 
-###Install Rails.
-
-*Note: this can be done from within any directory*
-
-
-* Let's see what versions of rails we have installed already. 
-
-```
-$ gem list |grep rails
-``` 
-
-* Let's install the lastest version of rails.
-
-```
-$ gem install rails
-```
-
-### Create a Rails application.
-
-Create a Rails app that will use a SQLite DB
-
-```
-$ rails new movies_crud_app -T 
-```
-
-This will create a Rails application named movies_crud_app.
-
-The -T option, or --skip-test-unit, option will exclude the tests from this Rails app. 
-
-This will: 
-
-* Create a directory named `movies_crud_app` that will contain all the directories, files and code for a baseline Rails application.
-* Get all of the Ruby Gems needed by this application as indicated in this application's Gemfile. _These gems will be downloaded from `https:://rubygems.org` if they don't already exist on your local machine._
-
-
-```ruby  
-source 'https://rubygems.org'
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'                                               
-gem 'rails', '4.2.5.1'
-	...
-	
-```
-
-* Install Ruby Gems. This will install the ruby gems on your local system/machine.
+`~/.sqliterc`
 
 ```bash
-$ bundle install
+.headers on
+.mode column
+.timer on
+.echo off
+.nullvalue "NULL"
 ```
 
-> Note: that it may stall after the `bundle install` command. This is because Rails is loading and installing all the Ruby Gems and their dependencies for app that are listed in the `Gemfile`.
-
-### Review Rail application directory structure.
-
-Change into this `movies_crud_app` directory and take a look at how Rails gives you a very clear location to place all the code you'll be writing.
-
-
-```
-$ cd movies_crud_app
-$ subl .
-
-```
-
-All Rails apps are structured in a very specific way. This is called **Convention Over Configuration**. The creator of Rails [David Heinemeier Hansson (DHH) ](http://david.heinemeierhansson.com/) has strong opinions about web and software development. In fact, Rails is often described as a *strongly opioniated*. 
-
-Another words, there are very specific and consistent locations in the directory structure for code that serves a specific purpose. 
-
-All Rails application maintain these consistent locations for code and other artifacts needed for our application.
-
-![Rails Application Structure](RailsAppStructure.png)
-
-The **bold** directories are where we'll be writing the vast majority of our application's code.
-
-* __app - Where most code for you application exists.__
-* bin - Scripts used by rails. _We won't be working in here._
-* __config - Contains configuration and code that will be excecuted when this app is initialized, i.e. startup code and configuration.__
-* __db - Contains code needed to setup the DB.__
-* lib - General Ruby code that is needed by the app that doesn't fall into the Model/View/Controllers.
-* log - Log files. Files generated by a running Rails app that record the operations of the app. _We'll be looking at this a lot._
-* public - Mix of front-end files, (HTML, CSS, Images), that mostly generated within your web application.
-* tmp - Temp files.
-* vendor - Files used for 3rd party libraries that are not gems.
-
-
-## Rails Environments
-
-By default, Rails can run in three different environments.
-
-### Development Mode
-
-The mode the app is in when developers are writing code and developing the app. 
-
-One great feature of this mode is that we don't have to restart the server after our changes. __Changes are automatically picked up by Rails.__
-
-### Testing Mode
-
-The mode the app is in when it's being tested. When we run our tests this is the mode we are running in.
-
-### Production Mode
-
-The mode the app is in when it's __live__, "In Production", being used online.
-
-__By Default the Rails application will start in Development Mode.__
-
-Take a look at the configuration for each mode.
-
-```bash
-$ cd config/environments
-$ ls
-development.rb  production.rb   test.rb
-```
-
-Each file will configure each of the Rails mode. 
-
-
-For example, the development.rb file will configure the app so that on every HTTP Request the app's code will be reloaded. _This will pick up any changes to your code since the last request!_
-
-```ruby
- # In the development environment your application's code is reloaded on                                     
-  # every request. This slows down response time but is perfect for development                               
-  # since you don't have to restart the web server when you make code changes.                                
-  config.cache_classes = false
-```
-
-## Create a database for this rails app. 
-
-**Rails applications always need a DB to store or persist it's data.**
-
-
-* Create a database.
-
-```
-$ rake db:create
-```
-
-This will create __TWO__ Databases.  One each for the `development` and `test` environments.
-
-> Note: For sqlite these DBs are just files in the `db` directory, `db/development.sqlite3` and `db/test.sqlite3`
-
-Open up the `config/database.yml` file. This is a YAML file use to configure a DB for each Rails environment.
-
-> NOTE: YAML is "Yet Another Markup Language"
-
-Notice, how each environment's database is named after the environment and app name.
-
-__In the config/database.yml file:__
-
-```
-...
-database: movies_crud_app_development
-...
-database: movies_crud_app_test
-...
-database: movies_crud_app_production
-```
-
-## Start the Rails app.
-```
-$ rails server
-```
-
-**Access the default Rails URL.**
-
-In your browser, go to this app running on your local machine, `localhost`, port `3000`.  
-
-`http://localhost:3000`.
-
-Ya, you should see the Welcome Aboard page. Rails is running!!!
-
-![Welcome Aboard page](./welcome_screen.png)
 
 ## Generate a Movie Migration and Model
 
-A Migration is a Ruby class that will generate SQL [Data Definition Statements](https://en.wikipedia.org/wiki/Data_definition_language) that will update a DB schema. _Typically, adding or modifying a DB table.__
+A Migration is a Ruby class that will generate SQL [Data Definition Statements (DDL) ](https://en.wikipedia.org/wiki/Data_definition_language) that will update a DB schema. _We will be adding and modifying a schema, (column names and data types), of a DB table.__
 
 A Model is a Ruby class that is used to persist a specific __Resource__, Movie, in a DB table.
 
-__Use a rails generator to create a Movie model.__
+__Use a rails generator to generate a Migration and Model for the Movie resource.__
 
 ```
 $ rails generate model Movie name:string rating:string desc:text length:integer
@@ -260,13 +95,15 @@ This is the migration file that was generated above. It will create a **Table** 
 
 #### Apply this Migration.
 
-This will use the above migration to generate the SQL to CREATE a table with the above columns and apply it to the `development` DB.
+This will use the above ActiveRecord Migration to generate the SQL to CREATE a table with the above columns and apply it to the `development` DB. 
+
+_Remember, by default Rails runs in development mode._
 
 ```
 rake db:migrate
 ```
 
-This will run the migrations to create a *movies* table that has a name, rating, desc and length columns. 
+This will run the migration to create a *movies* table that has a id, name, rating, desc, length, updated_at and created_at columns. 
 
 *Check the DB to confirm the existence of the movies table and the above columns*
 
@@ -274,7 +111,7 @@ This will run the migrations to create a *movies* table that has a name, rating,
 rails dbconsole
 ```
 
-This will bring up **psql**. *Command line utility to view the DB.*
+This will bring up **[sqlite3](http://zetcode.com/db/sqlite/tool/)** command line utility to interact with the Rails development DB.
 
 Lets look at all the tables in the DB. And describe the movies table. 
 
@@ -291,7 +128,13 @@ We can see that the **DB Schema** shows we have a movies table with the correct 
 
 > Note: Control-D to exit the dbconsole.
 
-### View the current DB Schema
+### View the current DB Schema.
+
+The current state of the DB Schema is kept in the schema.rb file. This file will get updated with each ActiveRecord Migation file you run.
+
+Note, that the **version** is a timestamp. It's the same timestamp of the last migration that has been run or applied. 
+
+_You'll be referring to the this file all the time, to remind yourself of the tables, thieir columns and data types._
 
 **Open the db/schema.rb file.**
 
@@ -310,7 +153,7 @@ ActiveRecord::Schema.define(version: 20160311041224) do
 end
 ```
 
-This file will always reflect the current schema for the DB!
+**This file will always reflect the current schema for the DB!**
 
 ## Movie Model
 
@@ -323,8 +166,11 @@ end
 
 A Model is a Plain Old Ruby Class that inherits it's behavior from the ActiveRecord Ruby Class.
 
+Rail's ActiveRecord class is based on the [Active Record Design Pattern](http://www.martinfowler.com/eaaCatalog/activeRecord.html)
+
 Active Record allows one to __C__reate, __R__ead, __U__pdate and __D__elete rows in the `movies` table.
 
+[ActiveRecord](http://guides.rubyonrails.org/active_record_basics.html) has **a lot** of behavior. We'll be discovering this piecemeal, as needed.
 
 ## Create seed data
 
@@ -346,9 +192,11 @@ Movie.create!(name: 'Rushmore', rating: 'PG-13', desc: 'Quirky humor', length: 1
 puts "Created three Movies"
 ```
 
+This uses the `ActiveRecord#create!` method to create a row in the `movies` table.
+
 [ActiveRecord Rails Guide - CRUD: Reading and Writing Data](http://guides.rubyonrails.org/active_record_basics.html#crud-reading-and-writing-data)
 
-**Add this data to the `movies` table.**
+**Add this seed data to the `movies` table.**
 
 ```
 rake db:seed
@@ -390,7 +238,7 @@ $ rails console
 The rails console is *VERY* important for debugging and checking rails.  
 
 
-Run the below commands in the Rails console.  *Notice the SQL that is created by each of the below ActiveRecord methods. 
+Run the below commands in the Rails console.  **Notice the SQL that is created by each of the below ActiveRecord methods.**
 
 **Read Movies using the `Movie` model.**
 
@@ -430,82 +278,22 @@ We are using Active Record methods to find models in the DB.
 * Movie.last - Last row in the `movies` table.
 * Movie.find(2) - Row with a id = 2 in the `movies1` table.
 * Movie.all - All rows in the `movies` table.
-* Movie.find_by_name("Mad Max") - Find the _first_ movie in the table with a name of "Mad Max"
-* Movie.where(rating: "R") - Find _all_ movies with a rating of "R"
+* `Movie.find_by_name("Mad Max")` - Find the _first_ movie in the table with a name of "Mad Max"
+* Movie.where(rating: "R") - Find _all_ movies with a rating of "R". _Always returns an Array._
 
 **ActiveRecord allow us to use Ruby models to Create, Read, Update and Delete data in the DB**.
 
 
 [ActiveRecord Rails Guide - Active Record Basics](http://guides.rubyonrails.org/active_record_basics.html)
 
-## Cheatsheet
+### Cheat Sheet
+[Cheat Sheet](Cheatsheet.md)
+Here's one to get you started on your own!
 
-* Create a new rails app.
-
-```
-$ rails new movies_crud_app -T 
-```
-
-* Create the DB for this app.
-
-```
-$ cd movies_crud_app
-$ rake db:create
-```
-
-* Run the rails app on localhost port 3000.
-
-```
-$ rails server
-```
-
-_Should see the Welcome Page at `http://localhost:3000`_
-
-* Create a movie migration and model.
-
-```
-$ rails generate model Movie name:string rating:string desc:text length:integer
-```
-
-* Create a `movies` table in the DB, i.e. run the migration.
-
-```
-$ rake db:migrate
-```
-
-* Create seed data in the movies table. _Add code above to the `db/seed.rb` file._
-
-```
-$ rake db:seed
-```
-
-* Check the current DB schema in `db/schema.rb`.
-* Check the data in the movies table.
-
-```
-$ rails dbconsole
-> SELECT * FROM movies;
-...
-> 
-```
-
-* Use the Rails console to find data using the Movie ActiveRecord class/model.
-
-```
-$ rails console
-> m1 = Movie.first
-> m2 = Movie.find(2)
-> mlast = Movie.last
-> all_movies = Movie.all
-> all_movies[2]
-> Movie.find_by_name("Mad Max")
-> Movie.find_by_rating("R")
-> Movie.where(rating: "R")
-```
 
 ## Lab
 
-* Create a Song resource in **this application**. Each Song will have a title, artist, description, price and length. 
+* Create a Song resource in **in another Rails app**. Each Song will have a title, artist, desc, price and length. 
 
 * The title and artist are simple strings, desc is a 'text' field because it could have a lot of text. What should the price and length types be? 
 
@@ -667,9 +455,14 @@ end
 [`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 
-## Resources
+## Next Lesson
+[Viewing all Movies](ControllerIndex.md)
 
-* [Rails Guide - Getting Started](http://guides.rubyonrails.org/getting_started.html)
+## Resources
+* [Rails Cheat Sheet](Cheatsheet.md)
+* [sqlite3](http://zetcode.com/db/sqlite/tool/)
+* [Rails Console Tips/Tricks](https://pragmaticstudio.com/blog/2014/3/11/console-shortcuts-tips-tricks)
+* [Rails and Rake Commands](http://guides.rubyonrails.org/command_line.html)
 * [Rails Guide - Active Record Migrations](http://guides.rubyonrails.org/active_record_migrations.html)
 * [Rails Guide - Active Record Basics](http://guides.rubyonrails.org/active_record_basics.html)
 * [PragStudio - RubyOnRails Level 1](https://pragmaticstudio.com/rails). This is a **very** good resource for learning Rails. They have been teaching Rails since the beginning and their teaching and presentation skill are **excellent**.
