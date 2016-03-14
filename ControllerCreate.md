@@ -48,6 +48,15 @@ $ rails s
   get '/movies/new', to: 'movies#new'
 ```
 
+> We also have to modify the route for the show action.
+
+```ruby
+ get '/movies/:id', to: 'movies#show', as: 'movie'
+```
+
+We have to add the `as: 'movie'` to the end of route so we will be
+able to use the movie_path and movie_url helpers in the upcoming form.
+
 #### Create a new action.
 
 **In `app/controllers/movies_controller.rb`.**
