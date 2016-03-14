@@ -2,11 +2,11 @@
 
 ## Objectives
 
+* Generate URL path and URL Helpers.
 * Show current routes.
-* Handling Errors.
-* Adding ActiveRecord Validations.
 * Using View Helpers.
-
+* Delete a movie.
+* Using the Flash for messages.
 
 ## Previous Lesson
 [Update a Movie](./ControllerUpdate.md)
@@ -30,6 +30,8 @@ $ rails s
 **Add a path helper for two routes in the `config/routes.rb` file.**
 
 A route not ONLY determines what controller/action should be invoked by a path and HTTP verb. It also generates path and url helpers.
+
+**Update two routes to have generate URL helpers.**
 
 ```ruby
 get '/movies/new', to: 'movies#new', as: 'new_movie'
@@ -56,7 +58,7 @@ $ rails console
 > 
 ```
 
-Now we can use these URL Helper method in a view or controller.
+Now we can use these URL Helper methods in a view or controller.
 
 For example, we use these URL Helpers in the create and update actions.
 
@@ -71,10 +73,24 @@ For example, we use these URL Helpers in the create and update actions.
 
 And we can use it along with a `link_to` helper to create a link to a movies in the `index.html.erb` template file.
 
+**Update the `app/views/movies/index.html.erb`**
+
+Now the index view will have a link to the show, edit, delete and movie action for each movie. Also it will have a link to create a new movie.
+
 ```
-<% @movies.each do |movie| %>
-  <li><%= movie.name %> | <%= link_to("Show", movie_path(movie.id)) %></li>
+<ul>
+  <% @movies.each do |movie| %>
+  <li><%= movie.name %>
+    | <%= link_to("Show", movie_path(movie.id)) %>
+    | <%= link_to "Edit", edit_movie_path(movie.id) %>
+    | <%= link_to 'Destroy', movie_path(movie.id), method: :delete, data: { confirm: 'Are\
+ you sure?' } %>
+  </li>
   <% end %>
+  <hr/><br/>
+  <%= link_to "Create a New Movie", new_movie_path %>
+</ul>
+
 ```
 
 See the `movie_path(movie.id)` URL helper. It will generate a `<a href="/movies/1">Show</a>` anchor tag.
@@ -85,7 +101,18 @@ Let's take a look at the app's routes.
 
 ```
 $ rake routes
+Prefix Verb  URI Pattern                Controller#Action                             
+    movies GET   /movies(.:format)          movies#index                                  
+ new_movie GET   /movies/new(.:format)      movies#new                                    
+edit_movie GET   /movies/:id/edit(.:format) movies#edit                                   
+     movie GET   /movies/:id(.:format)      movies#show                                   
+           POST  /movies(.:format)          movies#create                                 
+           PATCH /movies/:id(.:format)      movies#update 
 ```
+
+This is an often used command to see the routes for our app.
+
+
 
 ## Lab
 
