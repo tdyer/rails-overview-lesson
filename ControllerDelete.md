@@ -113,6 +113,30 @@ edit_movie GET   /movies/:id/edit(.:format) movies#edit
 This is an often used command to see the routes for our app.
 
 
+## Delete a Movie
+
+**Add this to the routes**
+
+```ruby
+  # Route a HTTP DELETE Request for movies to the                                         
+  # MoviesController destroy action.                                                      
+  delete '/movies/:id', to: 'movies#destroy'
+```
+
+**Add this to the movies controller**
+
+```ruby
+# DELETE /movies/:id                                                                    
+  def destroy
+    @movie = Movie.find(params[:id])
+
+    @movie.destroy
+    respond_to do |format|
+      format.html { redirect_to movies_url, notice: "You deleted a Movie"}
+      format.json { head :no_content }
+    end
+  end
+```
 
 ## Lab
 
