@@ -2,12 +2,11 @@
 
 ## Objectives
 
-* Create a route to show a HTML form, used to create a movie.
-* Create a ActionController#new action used to display this form.
+* Create a route to show a HTML form, used to edit a movie.
+* Create a ActionController#edit action used to display this form.
+* Use a View Partial for the movie form.
 * Create a View to generate this form.
-* Create route to create a movie.
-* Use Strong Parameters to create a movie.
-* Use respond_to to generate multiple movie representations.
+* Create route to update a movie.
 
 
 ## Model, View, Controller (MVC)
@@ -17,11 +16,11 @@ Rails is based on the MVC Architecture.
 ![MVC](mvc_archi1.png)
 
 ## Previous Lesson
-[Show a Movie](./ControllerShow.md)
+[Create a Movie](./ControllerCreate.md)
 
 ## Source Code/Implementation
 
-**Note: The implementation of this lesson is in the `movies_create` branch of this repository**
+**Note: The implementation of this lesson is in the `movies_update` branch of this repository**
 [`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 ## Setup
@@ -33,7 +32,7 @@ $ rake db:reset
 $ rails s
 ```
 
-## Generate a HTML Movie Form.
+## Generate a HTML Edit Movie Form.
 
 #### Create a route.
 
@@ -42,26 +41,56 @@ $ rails s
 **In `config/routes.rb`**
 
 ```ruby
-  # Route to generate a HTML form.
-  # Form will be used to create a movie.                                    
-  # MoviesController new action                                                           
-  get '/movies/new', to: 'movies#new'
+  # Route a to generate a HTML form to edit a movie.                                      
+  # MoviesController edit action                                                          
+  get '/movies/:id/edit', to: 'movies#edit'
 ```
 
-#### Create a new action.
+#### Create a edit action.
 
 **In `app/controllers/movies_controller.rb`.**
 
 ```ruby
- # GET /movies/new                                                                       
-  def new
-    # Create Movie object, need by the form_for helper                                    
-    # in the view                                                                         
-    @movie = Movie.new
+  # GET /movies/:id/edit                                                                  
+  def edit
+    # Find the movie to update  
+    # The movie's attribute will be used to fill in the form fields.                                                          
+    @movie = Movie.find(params[:id])
   end
 ```
 
 #### Create a view.
+
+For the edit view we will re-use most of the code that was created in the `new.html.erb` file. We will definitely re-use the form.
+
+So, lets extract this common view code into a **Partial**.
+
+#### Create a partial for the form. 
+
+Extract the form code out of the `new.html.erb` view and add it to the partial view `app/views/movies/_form.html.erb`
+
+**Create form partial and edit view.**
+
+```
+touch app/views/movies/_form.html.erb
+touch app/views/movies/edit.html.erb
+```
+
+_Notice partials are always prefixed by an underscore, `_`._
+
+**In `app/views/movies/_form.html.erb` add form code from new view.**
+
+```html
+<!-- Helper to generate a HTML Form -->
+<%= form_for(@movie) do |f| %>
+<fieldset>
+	...
+</fieldset>
+<% end %>
+
+```
+
+#### Use this form partial in both the new and edit views.
 
 **In `app/views/movies/new.html.erb`**
 
@@ -70,193 +99,74 @@ $ rails s
   <h1>Create a new Movie</h1>
 </header>
 
-<!-- Use a form_for helper to generate a HTML form tag -->
-<%= form_for(@movie) do |f| %>
-<fieldset>
-  <ul>
-    <li>
-      <%= f.label :name %>
-      <!-- Create text field for the movie name -->
-      <%= f.text_field :name, autofocus: true %>
-    </li>
-    <li>
-      <%= f.label :rating %>
-      <!-- Create a select/dropdown the movie rating -->
-      <%= f.select :rating, Movie::RATINGS.to_a.map { |r| [r, r] }, include_blank: true %>
-    </li>
-    <li>
-      <%= f.label :description %>
-      <!-- Create a text area for a movie description -->      
-      <%= f.text_area :desc %>
-    </li>
-    <li>
-      <%= f.label :length %>
-      <!-- Create a number field for the length of the movie -->
-      <%= f.number_field :length, min: 3, max: 300, value: 120 %>
-    </li>
-    <li>
-      <%= f.label :released_year %>
-      <!-- Create a select/dropdown for the movie released year -->
-      <%= f.select :released_year, (1910..Date.today.year).to_a.map { |y| [y, y] }, selected: '1980'  %>
-    </li>
-  </ul>
-  <p>
-  	 <!-- Create a Submit Button -->
-    <%= f.submit %><br/>
-  </p>
-</fieldset>
-<% end %>
+<!-- render the partial _form.html.erb -->
+<!-- This will include the HTML generated in this form partial here -->
+<%= render 'form' %>
+
 ```
 
-This "new" view will generate a HTML Form to create a Movie.
+**In `app/views/movies/edit.html.erb`**
 
-The [form_for](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html) helper will generate a HTML form tag. It takes two arguments:
+```
+<header>
+  <h1>Update a Movie</h1>
+</header>
 
-* A model. _In this case just an empty movie object/model._
-* A block containing a set of helpers to generate form fields.
-
-Each attribute of the movie is shown using a helper that will generate a specific type of text field or select field.
-
-Let's take a look at the HTML that this `form_for` helper generates.
-
-```HTML
-<form class="new_movie" id="new_movie" action="/movies" accept-charset="UTF-8" method="post">
-<input name="utf8" type="hidden" value="&#x2713;" />
-<input type="hidden" name="authenticity_token" value="9hjZUU+99zKpJIyJsQvJU9QApZgjuVMz4juC8ewLH5j5bhw2JUu5q01bdECyL3k4Vur6r9psTyTHCp9Fu867uA==" />
+<%= render 'form' %>
 ```
 
-Notice, that the first line is the HTML form tag generated.
- 
-* The `action="/movies"` determines the path submitted.
-* The `method="post"` determines the HTTP method 'POST'
+A view partial will allow us to share view code between views. Much like a method allows us to share code. We want to keep our view code **DRY** as well.
 
-For the HTTP Request generated when we submit this form.
+[Rails Guide - Using Partials](http://guides.rubyonrails.org/layouts_and_rendering.html#using-partials)
 
 
-#### Form Helpers
+## Update a Movie.
 
-Helper methods are ordinary ruby methods that generate HTML. In this case they will generate HTML form fields.
+We will use the data sent from the Browser, via a form, or a HTTP client such as curl to update an existing movie.
 
-* [f.text_field](http://apidock.com/rails/ActionView/Helpers/FormHelper/text_field)
-* [f.text_area](http://apidock.com/rails/v4.2.1/ActionView/Helpers/FormHelper/text_area)
-* [f.select](http://api.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-select)
-* [f.number_field](http://apidock.com/rails/ActionView/Helpers/FormHelper/number_field)
-
-The form helpers will invoke the movie model methods to get values for the form. _In this case there are no values for (name, rating,...)._
-
-
-
-#### Create Movie Ratings.
-
-**In the `app/models/movie.rb`**
-
-Typically, we would use a Ruby constant for values that will NOT change
-throughtout the life of the app. 
-
-For example, we'll assume the Movie Ratings never change.
+**Create a route for the update action**
 
 ```ruby
-class Movie < ActiveRecord::Base
-  # Valid Movie Ratings
-  RATINGS = ['G', 'PG', 'PG-13', 'R', 'NC-17']
-end
+  # Route a HTTP PATCH Request for movies to the                                          
+  # MoviesController update action.                                                       
+  patch '/movies/:id', to: 'movies#update'
 ```
 
-## Create a Movie
-
-Now, we must  handle the case where the Browser or a HTTP client is sending us data that will be used to create a movie.
-
-A Browser will from a string of data from the submitted form.
-
-A HTTP Client, like curl, will submt data possibly in another format such as JSON.
-
-#### Create a route to create a movie.
-
-**In the config/routes.rb file.**
+**Create a update action.**
 
 ```ruby
-  # Route a HTTP POST Request for movies to the                                           
-  # MoviesController create action.                                                       
-  post '/movies', to: 'movies#create'
-```
+	# PATCH /movies/:id
+  def update
+    # Find the movie to update
+    @movie = Movie.find(params[:id])
 
-This will route all HTTP POST request with a path of `/movies to the MoviesController@create action.
+    respond_to do |format|
 
-**In `app/controllers/movies_controller.rb`**
-
-Create an action that will create a movie!
-
-```ruby
-	# POST /movies
-  def create
-    # Create a new movie from the params hash
-    # (Note the movies_params is a method from below)
-    @movie = Movie.new(movie_params)
-
-    respond_to do |format| # Select HTML or JSON representation.
-
-      if @movie.save  # Will return true if saved in DB.
-
-        # save succeeded! Send a HTTP Redirect to the /movies/:id
-        # where :id is the id of the movie just saved, ex: /movies/4.
-        format.html { redirect_to movie_path(@movie.id), notice: 'Movie created' }
-
-        # save succeeded! Send a HTTP status of 201 Created in the Response
-        format.json { render :show, status: :created, location: @movie }
-
+      if @movie.update(movie_params)
+        format.html { redirect_to movie_path(@movie), notice: 'Successfully updated the movie' }
+        format.json { render :show, status: :ok, location: movie_path(@movie) }
       else
-        # save failed! show the form again.
-        format.html {render :new}
-
-        # save failed! show the json representation of the song errors.
-        # Send a HTTP status of 422 Uprocessable Entity in the Response
-        format.json {render json: @song.errors, status: :unprocessable_enitity }
+        format.html { render :edit } # show the edit form again
+        format.json { render json: @song.errors, status: :unprocessable_entity }
       end
     end
   end
 
 ```
-#### [Strong Parameters](http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters)
-
-"..you'll have to make a conscious decision about which attributes to allow for mass update. This is a better security practice to help prevent accidentally allowing users to update sensitive model attributes.."
-
-
-**At the end of `app/controllers/movies_controller.rb`**
-
-```ruby
-  private
-
-  # Enforces strong parameter. Limit what attributes/columns can be set in the 
-  # movies table.                                                                         
-  def movie_params
-  	 # require(:movie) - params hash MUST have a key with the symbol :movie
-  	 # permit(...) - hash value for movie must have keys, :name, :desc, ...
-    params.require(:movie).permit(:name, :desc, :rating, :released_year, :length)
-   end
-
-```
-
 ### Server Log for POST /movies
 
 ```
-Started POST "/movies" for ::1 at 2016-03-14 09:53:40 -0400
-Processing by MoviesController#create as HTML
-  Parameters: {"utf8"=>"✓", "authenticity_token"=>"y4kWpg21/okv/o2lg34TiPFVAvZ2M84PKC50fI\
-u0VNvE/9PBZ0OwEMuBdWyAWqPjc79dwY/m0hgNH2nI3HHw+w==", "movie"=>{"name"=>"Relevant", "rating"=>"R", "desc"=>"harrowing", "length"=>"134", "released_year"=>"2015"}, "commit"=>"Create Movie"}
-   (0.2ms)  begin transaction
-  SQL (1.3ms)  INSERT INTO "movies" ("name", "desc", "rating", "released_year", "length", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?)  [["name", "Relevant"], ["desc", "harrowing"], ["rating", "R"], ["released_year", 2015], ["length", 134], ["created_at", "2016-03-14 13:53:40.728673"], ["updated_at", "2016-03-14 13:53:40.728673"]]
-   (1.3ms)  commit transaction
-Redirected to http://localhost:3000/movies/6
-Completed 302 Found in 9ms (ActiveRecord: 2.7ms)
+Started PATCH "/movies/4" for ::1 at 2016-03-14 10:57:06 -0400
+Processing by MoviesController#update as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"e3t68JQVpqsiZ2bYA8e6PgKE1fjICepTZLD6xsOE6h0Db+XuPpY0j2ZVJjK66DeuBMYBr1O75oo95fTMu3iA==", "movie"=>{"name"=>"Jaw", "rating"=>"PG", "desc"=>"killer shark", "length"=>"120", "released_year"=>"1980"}, "commit"=>"Update Movie", "id"=>"4"}
+  Movie Load (0.2ms)  SELECT  "movies".* FROM "movies" WHERE "movies"."id" = ? LIMIT 1  [["id", 4]]
+   (0.1ms)  begin transaction
+  SQL (0.4ms)  UPDATE "movies" SET "name" = ?, "released_year" = ?, "length" = ?, "updated_at" = ? WHERE "movies"."id" = ?  [["name", "Jaw"], ["released_year", 1980], ["length", 120], ["updated_at", "2016-03-14 14:57:06.795066"], ["id", 4]]
+   (0.9ms)  commit transaction
+Redirected to http://localhost:3000/movies/4
 ```
 
-Notice that the Parameters:, params hash, has a Hash that is OK with the movie_params method.
-
-```
- Parameters: {.. "movie"=>{"name"=>"Relevant", "rating"=>"R", "desc"=>"harrowing", "length"=>"134", "released_year"=>"2015"}, ...}
-```
-
-And that we Redirect to /movies/6. Where 6 is the id of movie just created.
+See the PATH HTTP Method and the UPDATE SQL statement.
 
 ## Lab
 
@@ -265,7 +175,7 @@ And that we Redirect to /movies/6. Where 6 is the id of movie just created.
 
 ## Resources
 * [Rails Cheat Sheet](Cheatsheet.md)
-* [Rails Guide: Rails Routing](http://guides.rubyonrails.org/routing.html)
+* [Rails Guide - Using Partials](http://guides.rubyonrails.org/layouts_and_rendering.html#using-partials)
 * [PragStudio - RubyOnRails Level 1](https://pragmaticstudio.com/rails). This is a **very** good resource for learning Rails. They have been teaching Rails since the beginning and their teaching and presentation skill are **excellent**.
 
 
