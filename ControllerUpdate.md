@@ -171,7 +171,7 @@ See the PATH HTTP Method and the UPDATE SQL statement.
 ## Lab
 
 ## Next Lesson
-[Update a Movie](ControllerUpdate.md)
+[Delete a Movie](ControllerDelete.md)
 
 ## Resources
 * [Rails Cheat Sheet](Cheatsheet.md)
