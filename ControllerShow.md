@@ -213,7 +213,7 @@ Here's one to get you started on your own!
 ## Lab
 
 ## Next Lesson
-[Viewing One Movie](ControllerShow.md)
+[Create a Movie](ControllerCreate.md)
 
 ## Resources
 * [Rails Cheat Sheet](Cheatsheet.md)
