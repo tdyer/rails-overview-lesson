@@ -2,16 +2,17 @@
 
 ## Objectives
 
-* Create ActiveRecord Validations.
-* Displaying Error Messages.
+* Use HTTP Cookies to maintain state btw requests.
+* Use the Rails Session.
+* Message Users with the Rails Flash.
 
 
 ## Previous Lesson
-[Delete a Movie](./ControllerDelete.md)
+[Delete a Movie](./ControllerErrors.md)
 
 ## Source Code/Implementation
 
-**Note: The implementation of this lesson is in the `movies_errors` branch of this repository**
+**Note: The implementation of this lesson is in the `movies_session` branch of this repository**
 [`movies_crud_app`](https://github.com/tdyer/movies_crud_app)
 
 ## Setup
@@ -23,12 +24,12 @@ $ rake db:reset
 $ rails s
 ```
 
-## ActiveRecord Validations
+## Cookies
 
-## Error Handling
+## Sessions
 
-## Next Lesson
-[HTTP Cookies and Sessions](CookieSessions.md)
+## Rails Flash
+
 
 ## Resources
 * [Rails Cheat Sheet](Cheatsheet.md)
