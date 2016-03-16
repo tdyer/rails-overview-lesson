@@ -2,6 +2,7 @@
 
 ## Objectives
 
+* Update an existing Movie resource.
 * Create a route to show a HTML form, used to edit a movie.
 * Create a ActionController#edit action used to display this form.
 * Use a View Partial for the movie form.
@@ -59,26 +60,30 @@ $ rails s
   end
 ```
 
+> This will use the ID in the URL's path, `/movies/4/edit`, to find the movie with an id of 4 in the DB.
+> 
+> Of course, the @movie instance variable will be available in the view.
+
 #### Create a view.
 
 For the edit view we will re-use most of the code that was created in the `new.html.erb` file. We will definitely re-use the form.
 
-So, lets extract this common view code into a **Partial**.
+So, lets extract this common view code into a view **Partial**.
 
 #### Create a partial for the form. 
 
 Extract the form code out of the `new.html.erb` view and add it to the partial view `app/views/movies/_form.html.erb`
 
-**Create form partial and edit view.**
+**Create a form partial and edit view.**
 
 ```
 touch app/views/movies/_form.html.erb
 touch app/views/movies/edit.html.erb
 ```
 
-_Notice partials are always prefixed by an underscore, `_`._
+_Notice partials are always prefixed by an underscore, `_`_
 
-**In `app/views/movies/_form.html.erb` add form code from new view.**
+**Paste the form code cut from the new view into the form partial, `app/views/movies/_form.html.erb`.**
 
 ```html
 <!-- Helper to generate a HTML Form -->
