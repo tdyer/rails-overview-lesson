@@ -33,11 +33,12 @@ $ rake db:reset
 $ rails s
 ```
 
+> The rake db:reset is a shorthand command that will totally re-create and re-initialize your DB. It will drop, `rake db:drop`, create, `rake db:create`, migrate, `rake db:migrate` and seed, `rake db:seed` your development DB.
+
 ## Generate a HTML Movie Form.
 
 #### Create a route.
 
-> Note: this should be ABOVE the route for the show action.
 
 **In `config/routes.rb`**
 
@@ -47,15 +48,24 @@ $ rails s
   # MoviesController new action                                                           
   get '/movies/new', to: 'movies#new'
 ```
+This will allow Rails to handle a HTTP GET request for the path `/movies/new`. This route **MUST** be above the show route in the routes.rb.
 
-> We also have to modify the route for the show action.
+> This route for the new action MUST be above the route for the show action. The routing code will look at each route starting from the top of the routes.rb file until it finds a match.
+> 
+>So, if the path in the request is `/movies/new` and the route for the show action, `/movies/:id` is reached. The this will be be a match and try to invoke the MoviesController#show action. **Not Good**.
+>
+> The `/movies/:id` will match anything following the second backslash in the path. So it would see the string `new` in `/movies/new` as the `:id`!
+
+We also have to modify the route for the show action.
 
 ```ruby
  get '/movies/:id', to: 'movies#show', as: 'movie'
 ```
 
 We have to add the `as: 'movie'` to the end of route so we will be
-able to use the movie_path and movie_url helpers in the upcoming form.
+able to use the `movie_path` and `movie_url` helpers in the upcoming form.
+
+> Later we will see that routes not only match a request path and dispatch to a controller action. Routes also may generate a path or url helper method.
 
 #### Create a new action.
 
@@ -69,6 +79,10 @@ able to use the movie_path and movie_url helpers in the upcoming form.
     @movie = Movie.new
   end
 ```
+
+> The `form_for` helper method we use below will take a Movie model object as an argument. This helper method and the other helpers, i.e. text_helper, will attempt to fill in a HTML input `<input ...>` field using the Movie model attributes.
+> 
+> For example, It will fill in the HTML field with the name attribute of the movie. In this case, we'll pass a movie model with no attributes. So, the fields will be empty.
 
 #### Create a view.
 
@@ -137,14 +151,20 @@ Let's take a look at the HTML that this `form_for` helper generates.
 Notice, that the first line is the HTML form tag generated.
  
 * The `action="/movies"` determines the path submitted.
-* The `method="post"` determines the HTTP method 'POST'
+* The `method="post"` determines the HTTP method 'POST' will be used.
 
-For the HTTP Request generated when we submit this form.
+When we submit the form will will generate a HTTP 'POST' Request with a path of `/movies`. This POST request will also submit any data you've entered in the form's fields.
 
+
+**URL Encoded Data sent in the body of the HTTP POST Request for '/movies'**
+
+`... movie%5Bname%5D=Jaws&movie%5Brating%5D=G&movie%5Bdesc%5D=Fishy&movie%5Blength%5D=130&movie%5Breleased_year%5D=1977 ... `
 
 #### Form Helpers
 
 Helper methods are ordinary ruby methods that generate HTML. In this case they will generate HTML form fields.
+
+_Each of these are links to the Rails documentation for the helper method._
 
 * [f.text_field](http://apidock.com/rails/ActionView/Helpers/FormHelper/text_field)
 * [f.text_area](http://apidock.com/rails/v4.2.1/ActionView/Helpers/FormHelper/text_area)
@@ -173,7 +193,7 @@ end
 
 ## Create a Movie
 
-Now, we must  handle the case where the Browser or a HTTP client is sending us data that will be used to create a movie.
+Now, we must  handle the case where the Browser or a HTTP client is sending us data, via a HTTP POST request, that will be used to create a movie.
 
 A Browser will from a string of data from the submitted form.
 
@@ -189,7 +209,7 @@ A HTTP Client, like curl, will submt data possibly in another format such as JSO
   post '/movies', to: 'movies#create'
 ```
 
-This will route all HTTP POST request with a path of `/movies to the MoviesController@create action.
+This will route all HTTP POST request with a path of `/movies to the MoviesController#create action.
 
 **In `app/controllers/movies_controller.rb`**
 
@@ -198,6 +218,7 @@ Create an action that will create a movie!
 ```ruby
 	# POST /movies
   def create
+  
     # Create a new movie from the params hash
     # (Note the movies_params is a method from below)
     @movie = Movie.new(movie_params)
@@ -267,7 +288,16 @@ Notice that the Parameters:, params hash, has a Hash that is OK with the movie_p
 
 And that we Redirect to /movies/6. Where 6 is the id of movie just created.
 
-## Lab
+### URL encoded Data to Params Hash
+
+Remember that the Form in the Browser submits URL encoded data for each form field.
+
+`... movie%5Bname%5D=Jaws&movie%5Brating%5D=G&movie%5Bdesc%5D=Fishy&movie%5Blength%5D=130&movie%5Breleased_year%5D=1977 ... `
+
+Rails tranforms this into a params hash.
+
+`Parameters: {.. "movie"=>{"name"=>"Relevant", "rating"=>"R", "desc"=>"harrowing", "length"=>"134", "released_year"=>"2015"}, ...}`
+
 
 ## Next Lesson
 [Update a Movie](ControllerUpdate.md)
