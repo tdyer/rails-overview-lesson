@@ -18,6 +18,9 @@ Lesson        | Topics
 [Create a Movie](./ControllerCreate.md) | New/Create Routes, Actions and Views
 [Update a Movie](./ControllerUpdate.md) | New/Create Routes, Actions and Views
 [Delete a Movie](./ControllerDelete.md) | URL Helpers and Delete Action
+[Active Record Validations](./ActiveRecordValidations.md) | Assert Valid data in Models 
+[Controller Cleanup](./ControllerMisc.md) | Before Filters, etc.
+
 
 ## Resources
 
