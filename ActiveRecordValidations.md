@@ -27,11 +27,15 @@ $ rails s
 
 ## ActiveRecord Validations
 
+[Rails Guide - ActiveRecord Validations](http://guides.rubyonrails.org/active_record_validations.html)
+
 We can constrain the values allowed for a Model's attributes. Another words, we can **validate** that an attribute can **ONLY have a valid value**.
 
 This is best seen with a couple of examples.
 
-#### Validate [Presence Of](http://guides.rubyonrails.org/active_record_validations.html#presencepresence)
+#### Validate [Presence Of](http://guides.rubyonrails.org/active_record_validations.html#presence)
+
+Let's add a validation that will assert that a movie MUST have a name. 
 
 **In the movie model.**
 
@@ -61,6 +65,8 @@ We can check that a model is valid using the `valid?` and `invalid?` ActiveRecor
 
 ```ruby
 > m1 = Movie.first
+> m1.name
+"Affliction"
 > m1.valid?
 true
 > m1.invalid? 
@@ -72,7 +78,7 @@ Yes, the movie is valid because it has a name.
 
 #### Showing [Errors](http://guides.rubyonrails.org/active_record_validations.html#working-with-validation-errors).
 
-ActiveRecord models have a an `errors` method that returns an instance of [ActiveModel::Errors](http://api.rubyonrails.org/classes/ActiveModel/Errors.html)
+ActiveRecord models have a `errors` method that returns an instance of [ActiveModel::Errors](http://api.rubyonrails.org/classes/ActiveModel/Errors.html)
 
 This `errors` object behaves like a Ruby Hash were you can show error messages. _Let's have a look at it._
 
@@ -102,9 +108,11 @@ false
 {:name=>["can't be blank"]}
 >
 ```
+
 See how we made the movie invalid and showed the error message. _Pretty cool._
 
 For an invalid model the messages hash will have an **Array of messages** for each **invalid** model attribute.
+
 
 ## More ActiveRecord Validations
 
@@ -161,6 +169,8 @@ Not too sure about this validation? Can't we have remakes of old movies? Yes.
   ...
 ```
 
+The scope constraint will determine that the combination of multiple attributes is unique. For example, we can have remakes of a movie with the same name as long as they do NOT have the same released_year.
+
 Now we can check this in the console.
 
 **Validate the rating.**
@@ -170,6 +180,10 @@ Now we can check this in the console.
   # RATINGS constant.                                                                     
   validates :rating, inclusion: { in: RATINGS, message: "%{value} is not a MPAA rating" }
 ```
+
+Here we are seeing that the value for the rating attribute MUST be `included` in the RATINGS array.
+
+**We also see that we can change the default error message.**
 
 **Check it in the console.**
 
@@ -191,15 +205,28 @@ Now we can check this in the console.
   validates :released_year, inclusion: { in: 1910..Date.today.year, message: "%{value} is not a valid release year, it must be between 1910 and #{Date.today.year}" }
  ...
 ```
+
+Here we are checking that the length MUST be a number greater than 2 and less than 301 minutes.
+
+And that the released_year must be from 1910 to the current year.
+
+> Here we use a Ruby Range where the end year is the today's year.
+
+
+#### Changing the default Error Messages for the entire application.
+
+You can change the default error messages used by your Rails application by using [Rails Internationalization (I18n) API](http://guides.rubyonrails.org/i18n.html)
+
+This is a topic that we won't dive into but you can dive into this Rails Guide for more info, [ActiveRecord Error Messages](http://guides.rubyonrails.org/i18n.html#error-message-scopes)
+
 ## Error Handling in the views
 
-In order to view ActiveRecord Errors in the views we'll add the below to the Form partial `app/views/movies/_form.html.erb`
+In order to view ActiveRecord Errors in the views we'll add the below to the Form partial in `app/views/movies/_form.html.erb`
 
 ```
 <% if @movie.errors.any? %>
 <div id="error_explanation">
-  <h2><%= pluralize(@movie.errors.count, "error") %> prohibited this movie from b\
-    eing saved:</h2>
+  <h2><%= pluralize(@movie.errors.count, "error") %> prohibited this movie from being saved:</h2>
 
   <ul>
     <% @movie.errors.full_messages.each do |message| %>
