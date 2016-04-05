@@ -20,8 +20,10 @@ Lesson        | Topics
 [Delete a Movie](./ControllerDelete.md) | URL Helpers and Delete Action
 [Active Record Validations](./ActiveRecordValidations.md) | Assert Valid data in Models 
 [Controller Cleanup](./ControllerMisc.md) | Before Filters, etc.
-[Active Record One to Many Relationships](./HasMany.md) | Active Record `has_many` and `belongs_to` ˜
-[Nested Resources](./Nested Resources) | Implement Nested Resources. 
+[Active Record One to Many Relationships](./HasMany.md) | Active Record `has_many` and `belongs_to`
+[Nested Resources](./NestedResources.md) | Implement Nested Resources. 
+[Registration and Authentication with Devise](Authentication.md) | Registration and Authentication with Devise.
+
 
 
 ## Resources

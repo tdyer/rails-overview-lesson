@@ -337,7 +337,9 @@ end
 
 Here we check for the presence of review content and that we have been given a valid email address.
 
+## Next Lesson
 
+[Registration and Authentication with Devise](Authentication.md)
 ## Resources
 
 
