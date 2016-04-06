@@ -23,6 +23,8 @@ Lesson        | Topics
 [Active Record One to Many Relationships](./HasMany.md) | Active Record `has_many` and `belongs_to`
 [Nested Resources](./NestedResources.md) | Implement Nested Resources. 
 [Registration and Authentication with Devise](Authentication.md) | Registration and Authentication with Devise.
+[Authorization and Access Control](Authorization.md) | Restricting Application Access.
+[Active Record Many to Many Relationships](HasManyThrough.md) | Active Record `has_many :through`
 
 
 
