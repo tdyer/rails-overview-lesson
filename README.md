@@ -1,4 +1,4 @@
-![General Assembly Logo](http://i.imgur.com/ke8USTq.png)
+# RubyOnRails Tutorial
 
 ## Objectives
 * Draw Diagrams that show the flow of a HTTP Requests and Responses and the how the Model, View and Controller interact.

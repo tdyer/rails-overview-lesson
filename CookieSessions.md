@@ -1,5 +1,3 @@
-![General Assembly Logo](http://i.imgur.com/ke8USTq.png)
-
 ## Objectives
 
 * Use HTTP Cookies to maintain state btw requests.

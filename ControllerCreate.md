@@ -1,5 +1,3 @@
-![General Assembly Logo](http://i.imgur.com/ke8USTq.png)
-
 ## Objectives
 
 * Create a route to show a HTML form, used to create a movie.

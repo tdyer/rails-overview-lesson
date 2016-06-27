@@ -1,5 +1,3 @@
-![General Assembly Logo](http://i.imgur.com/ke8USTq.png)
-
 ## Objectives
 * Draw Diagrams that show the flow of a HTTP Requests and Responses and the how the Model, View and Controller interact.
 * Start to create a cheatsheet for all the Rails and Rack commands. 
